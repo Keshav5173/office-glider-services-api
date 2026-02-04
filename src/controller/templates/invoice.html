@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Invoice</title>
+
+    <style>
+        .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            padding: 10px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(58,134,151, 0.15);
+            font-size: 14px;
+            line-height: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #000;
+        }
+
+        table {
+            width: 100%;
+            text-align: left;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .heading td {
+            background: #eee;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .item td {
+            border-bottom: 1px solid #eee;
+        }
+
+        .total td {
+            border-top: 2px solid #eee;
+            font-weight: bold;
+        }
+
+        /* Trip Summary Card */
+        .trip-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+
+        .trip-title {
+            color: #3A8697;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .route-path {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .journeySection {
+            display: flex;
+            justify-content: space-between;
+            /* padding: 0 50px; */
+        }
+
+        .trip-section {
+            margin-bottom: 8px;
+            padding: 0 50px;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+<div class="invoice-box">
+
+    <!-- HEADER -->
+    <div style="background:#3A8697; text-align:center; padding:5px;">
+        <h2 style="color:white;">Invoice</h2>
+    </div>
+
+    <!-- TOP INFO -->
+    <table>
+        <tr>
+            <td>
+                <img src="{{logo}}" style="max-width:80px;">
+            </td>
+            <td style="text-align:right;">
+                PNR NO: {{pnr_no}}<br>
+                Booking Date: {{created_date}}<br>
+                Payment Type: {{method}}
+            </td>
+        </tr> 
+    </table>
+
+    <!-- COMPANY & CUSTOMER -->
+    <table>
+        <tr>
+            <td>
+                <strong>From:</strong><br>
+                {{company.name}}<br>
+                {{company.phone}}<br>
+                {{company.email}}<br>
+                {{company.address}}
+            </td>
+            <td style="text-align:right;">
+                <strong>Billing To:</strong><br>
+                {{customer.fullname}}<br>
+                {{customer.phone}}<br>
+                {{customer.email}}<br>
+                {{customer.address}}
+            </td>
+        </tr>
+    </table>
+
+    <br>
+
+    <!-- TRIP SUMMARY UI -->
+    <div class="trip-card">
+        <div class="trip-title">Trip {{route_name}}</div>
+
+        <div class="route-path">
+            {{pickup_name}} 
+                ◀━━━━━━━━━━━━━━━▶
+            {{dropoff_name}} 
+        </div>
+
+        <div class="trip-section">
+            <span class="label">Service Duration:</span><br>
+            📅 {{start_date}} → {{end_date}}
+        </div>
+
+        <div class="journeySection">
+            <div class="trip-section">
+                <span class="label">Morning Journey:</span><br>
+                Start Time: {{start_time}} <br>
+                Drop Time: {{end_time}}
+            </div>
+
+            <div class="trip-section">
+                <span class="label">Return Journey:</span><br>
+                Start Time: {{return_start_time}} <br>
+                Drop Time: {{return_drop_time}}
+            </div>
+        </div>
+    </div>
+
+    <!-- PAYMENT TABLE -->
+    <table>
+        <tr class="heading">
+            <td>Tax Point Date</td>
+            <td>Trip Details</td>
+            <td>Sub Total</td>
+            <td>Tax</td>
+            {{#if isOffer}}<td>Discount</td>{{/if}}
+            <td>Amount</td>
+        </tr>
+
+        <tr class="item">
+            <td>{{created_date}}</td>
+            <td>
+                Transportation Service<br>
+                {{pickup_name}} - {{dropoff_name}}
+            </td>
+            <td>₹{{sub_total}}</td>
+            <td>₹{{tax_amount}}</td>
+            {{#if isOffer}}
+            <td>₹{{offer.discount_amount}}</td>
+            {{/if}}
+            <td>₹{{final_total_fare}}</td>
+        </tr>
+
+        <tr class="total">
+            <td colspan="4"></td>
+            <td>Sub Total</td>
+            <td>₹{{sub_total}}</td>
+        </tr>
+
+        <tr class="total">
+            <td colspan="4"></td>
+            <td>Tax</td>
+            <td>₹{{tax_amount}}</td>
+        </tr>
+
+        {{#if isOffer}}
+        <tr class="total">
+            <td colspan="4"></td>
+            <td>Discount</td>
+            <td>₹{{offer.discount_amount}}</td>
+        </tr>
+        {{/if}}
+
+        <tr class="total">
+            <td colspan="4"></td>
+            <td>Final Amount</td>
+            {{#if isOffer}}
+            <td>₹{{offer.final_total_after_discount}}</td>
+            {{else}}
+            <td>₹{{final_total_fare}}</td>
+            {{/if}}
+        </tr>
+    </table>
+
+</div>
+</body>
+</html>
