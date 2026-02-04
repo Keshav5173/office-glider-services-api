@@ -91,11 +91,20 @@ const sendMultiNotification = async (req, res) => {
     const response = await firebase.messaging().sendEachForMulticast(messagePayload);
 
     console.log("📢 Multicast:", response.successCount, response.failureCount);
-    return response;
+    return res.status(200).json({
+        message: "Messages send successfully",
+        status: true,
+        data: response
+    });
 
   } catch (err) {
     console.error("❌ Error sending multicast notification:", err);
-    return { successCount: 0, failureCount: tokens.length };
+    // return { successCount: 0, failureCount: tokens.length };
+    return res.status(500).json({
+        message: "error occured during sending fcm notifications",
+        status: false,
+        data: response.failureCount
+    })
   }
 };
 
